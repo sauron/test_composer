@@ -2,6 +2,8 @@ class User
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  has_and_belongs_to_many :companies
+
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
@@ -46,5 +48,22 @@ class User
   index({ email: 1 }, { unique: true, background: true })
   field :name, :type => String
   validates_presence_of :name
-  attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :created_at, :updated_at
+  attr_accessible :name, :email, :password, :password_confirmation,
+                  :remember_me, :created_at, :updated_at, :company_name
+
+  attr_accessor :company_name
+
+  before_create :create_company
+
+  protected
+  def create_company
+    my_company = Company.create(:name => company_name)
+    if my_company
+      self.companies << my_company
+      true
+    else
+      errors.add_to_base "Company already exists"
+      false
+    end
+  end
 end

@@ -17,5 +17,11 @@ h2 Sign up
     = f.label :password_confirmation
     br/
     = f.password_field :password_confirmation
+
+    div
+      = f.label :company_name
+      br/
+      = f.text_field :company_name
+
   div= f.submit "Sign up"
 = render "devise/shared/links"
